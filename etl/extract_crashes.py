@@ -8,6 +8,7 @@ from datetime import datetime, timezone
 import yaml
 from dotenv import load_dotenv
 
+from utils.io_helpers import write_last_watermark
 from utils.socrata import (
     build_export_url,
     build_incremental_params,
@@ -72,7 +73,7 @@ def iterate_incremental_pages(
         page_no += 1
 
 
-def write_landing_pages(run_id: str, pages_iter, dest_dir):
+def write_landing_pages(run_id: str, pages_iter, dest_dir, watermark_path):
 
     if not os.path.exists(dest_dir):
         os.mkdir(dest_dir)
@@ -151,6 +152,8 @@ def write_landing_pages(run_id: str, pages_iter, dest_dir):
         mf.write(
             str(manifest),
         )
+
+    write_last_watermark(manifest=manifest, watermark_path=watermark_path)
 
     return manifest
 
