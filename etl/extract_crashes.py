@@ -141,8 +141,8 @@ def write_landing_pages(run_id: str, pages_iter, dest_dir, watermark_path):
             "total_pages": len(pages),
         },
         "suggested_next_watermark": suggested_next_watermark,
-        "started_at": started_at,
-        "finished_at": finished_at,
+        "started_at": str(started_at),
+        "finished_at": str(finished_at),
     }
 
     with open(os.path.join(dest_dir, "manifest.json"), "w") as mf:
