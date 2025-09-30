@@ -1,0 +1,6 @@
+dataset:
+  name: Motor Vehicle Collisions - Crashes
+  base_url: data.cityofnewyork.us
+  dataset_id: h9gi-nx95
+
+
