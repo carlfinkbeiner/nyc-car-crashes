@@ -1,5 +1,7 @@
 import json
 
+import yaml
+
 
 def write_last_watermark(manifest: dict, watermark_path: str):
     last_watermark = manifest["suggested_next_watermark"]
@@ -26,16 +28,6 @@ def load_last_watermark(watermark_path: str):
         return last_watermark
 
 
-manifest = {
-    "schema_version": "1.0",
-    "run_id": "123",
-    "pages": "1000",
-    "totals": {
-        "total_rows": "1",
-        "total_size": "1",
-        "total_pages": "1",
-    },
-    "suggested_next_watermark": "2023-01-23",
-    "started_at": "2021-01-01",
-    "finished_at": "2021-01019",
-}
+def safe_load_yaml(yaml_path: str):
+    with open(yaml_path, "r") as f:
+        return yaml.safe_load(f)
