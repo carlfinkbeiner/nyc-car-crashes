@@ -94,23 +94,23 @@ def fetch_page(
     }
 
 
-def main():
-    last_watermark = "2025-09-18T00:00:00Z"
+# def main():
+#     last_watermark = "2025-09-18T00:00:00Z"
 
-    params = build_incremental_params(last_watermark=last_watermark, page_limit=1000)
+#     params = build_incremental_params(last_watermark=last_watermark, page_limit=1000)
 
-    print(
-        fetch_page(
-            dataset_id=dataset_id,
-            base_url=base_url,
-            params=params,
-            app_token=str(SOCRATA_APP_TOKEN),
-            offset=0,
-        )["rows"][0]
-    )
+#     print(
+#         fetch_page(
+#             dataset_id=dataset_id,
+#             base_url=base_url,
+#             params=params,
+#             app_token=str(SOCRATA_APP_TOKEN),
+#             offset=0,
+#         )["rows"][0]
+#     )
 
-    return None
+#     return None
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()

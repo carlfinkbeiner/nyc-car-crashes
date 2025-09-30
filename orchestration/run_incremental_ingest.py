@@ -19,7 +19,7 @@ def main(
     dataset_id = settings["dataset"]["dataset_id"]
     base_url = settings["dataset"]["base_url"]
     app_token = secrets["socrata"]["app_token"]
-    landing_dir = settings["dataset"]["landing_dir"]
+    landing_dir = settings["landing_dir"]
     state_file_path = settings["state_file_path"]
 
     # resolve last watermark
@@ -119,5 +119,5 @@ if __name__ == "__main__":
         secrets_path=secrets_path,
         override_watermark=override_watermark,
         override_page_limit=override_page_limit,
-        dry_run=True,
+        dry_run=False,
     )

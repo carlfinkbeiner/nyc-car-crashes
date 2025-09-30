@@ -5,9 +5,6 @@ import os
 import uuid
 from datetime import datetime, timezone
 
-import yaml
-from dotenv import load_dotenv
-
 from utils.io_helpers import write_last_watermark
 from utils.socrata import (
     build_export_url,
@@ -149,31 +146,29 @@ def write_landing_pages(run_id: str, pages_iter, dest_dir, watermark_path):
     }
 
     with open(os.path.join(dest_dir, "manifest.json"), "w") as mf:
-        mf.write(
-            str(manifest),
-        )
+        json.dump(manifest, mf, indent=4)
 
     write_last_watermark(manifest=manifest, watermark_path=watermark_path)
 
     return manifest
 
 
-# CONFIG FOR TESTING--------------------------------------------------------------------
-load_dotenv()
+# # CONFIG FOR TESTING--------------------------------------------------------------------
+# load_dotenv()
 
-with open("/Users/carlfinkbeiner/repos/nyc-car-crashes/config/settings.yaml") as f:
-    config = yaml.safe_load(f)
+# with open("/Users/carlfinkbeiner/repos/nyc-car-crashes/config/settings.yaml") as f:
+#     config = yaml.safe_load(f)
 
-base_url = config["dataset"]["base_url"]
-dataset_id = config["dataset"]["dataset_id"]
-SOCRATA_APP_TOKEN = os.getenv("SOCRATA_APP_TOKEN")
-dest_path = r"/Users/carlfinkbeiner/repos/nyc-car-crashes/landing"
+# base_url = config["dataset"]["base_url"]
+# dataset_id = config["dataset"]["dataset_id"]
+# SOCRATA_APP_TOKEN = os.getenv("SOCRATA_APP_TOKEN")
+# dest_path = r"/Users/carlfinkbeiner/repos/nyc-car-crashes/landing"
 
-run_initial_export(
-    dataset_id=dataset_id,
-    base_url=base_url,
-    format="csv",
-    app_token=str(SOCRATA_APP_TOKEN),
-    dest_path=dest_path,
-    chunk_size=8192,
-)
+# run_initial_export(
+#     dataset_id=dataset_id,
+#     base_url=base_url,
+#     format="csv",
+#     app_token=str(SOCRATA_APP_TOKEN),
+#     dest_path=dest_path,
+#     chunk_size=8192,
+# )
