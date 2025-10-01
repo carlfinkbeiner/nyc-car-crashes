@@ -25,9 +25,9 @@ def run_initial_export(
     watermark_path: str,
 ):
     url = build_export_url(dataset_id=dataset_id, base_url=base_url, format=format)
-    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
     run_id = str(uuid.uuid4())
-    final_directory_path = os.path.join(dest_path, f"{run_id}_{timestamp}")
+    final_directory_path = os.path.join(dest_path, f"{timestamp}_{run_id}")
     os.mkdir(final_directory_path)
 
     final_export_path = os.path.join(final_directory_path, "export.csv")

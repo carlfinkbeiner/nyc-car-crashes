@@ -1,12 +1,11 @@
-import yaml
-
 from etl.extract_crashes import run_initial_export
+from utils.io_helpers import safe_load_yaml
 
-with open("/Users/carlfinkbeiner/repos/nyc-car-crashes/config/settings.yaml") as f:
-    config = yaml.safe_load(f)
+secrets_path = r"/Users/carlfinkbeiner/repos/nyc-car-crashes/config/secrets.yaml"
+settings_path = r"/Users/carlfinkbeiner/repos/nyc-car-crashes/config/settings.yaml"
 
-with open("/Users/carlfinkbeiner/repos/nyc-car-crashes/config/secrets.yaml") as fs:
-    secrets = yaml.safe_load(fs)
+secrets = safe_load_yaml(secrets_path)
+config = safe_load_yaml(settings_path)
 
 base_url = config["dataset"]["base_url"]
 dataset_id = config["dataset"]["dataset_id"]
