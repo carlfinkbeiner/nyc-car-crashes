@@ -113,7 +113,7 @@ if __name__ == "__main__":
     settings_path = r"/Users/carlfinkbeiner/repos/nyc-car-crashes/config/settings.yaml"
     secrets_path = r"/Users/carlfinkbeiner/repos/nyc-car-crashes/config/secrets.yaml"
     override_watermark = "2025-09-28T00:00:00.000Z"
-    override_page_limit = 1
+    override_page_limit = 10
     main(
         settings_path=settings_path,
         secrets_path=secrets_path,

@@ -1,9 +1,12 @@
+import csv
 import gzip
 import hashlib
 import json
 import os
 import uuid
 from datetime import datetime, timezone
+
+import yaml
 
 from utils.io_helpers import write_last_watermark
 from utils.socrata import (
@@ -21,11 +24,12 @@ def run_initial_export(
     app_token: str,
     dest_path: str,
     chunk_size: int,
+    watermark_path: str,
 ):
     url = build_export_url(dataset_id=dataset_id, base_url=base_url, format=format)
     timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-    unique_id = str(uuid.uuid4())
-    final_directory_path = os.path.join(dest_path, f"{unique_id}_{timestamp}")
+    run_id = str(uuid.uuid4())
+    final_directory_path = os.path.join(dest_path, f"{run_id}_{timestamp}")
     os.mkdir(final_directory_path)
 
     final_export_path = os.path.join(final_directory_path, "export.csv")
@@ -33,11 +37,35 @@ def run_initial_export(
     export_dict = fetch_export(
         url=url, app_token=app_token, dest_path=final_export_path, chunk_size=chunk_size
     )
+    total_size = export_dict["bytes"]
+    started_at = export_dict["started"]
+    finished_at = export_dict["finished"]
+    suggested_next_watermark = export_dict["suggested_next_watermark"]
 
-    manifest_dict = {"id": unique_id, "mode": "export", **export_dict}
+    with open(final_export_path, "r") as f:
+        reader = csv.reader(f)
+        total_rows = sum(1 for row in reader)
+
+    manifest_dict = {
+        "schema_version": "1.0",
+        "run_id": run_id,
+        "pages": 1,
+        "totals": {
+            "total_rows": total_rows,
+            "total_size": total_size,
+            "total_pages": 1,
+        },
+        "suggested_next_watermark": suggested_next_watermark,
+        "started_at": started_at,
+        "finished_at": finished_at,
+    }
 
     with open(f"{final_directory_path}/manifest.json", "w") as f:
         json.dump(manifest_dict, f, indent=4)
+
+    write_last_watermark(manifest=manifest_dict, watermark_path=watermark_path)
+
+    return manifest_dict
 
 
 def iterate_incremental_pages(
@@ -45,7 +73,7 @@ def iterate_incremental_pages(
 ):
     offset = 0
     page_no = 1
-    max_pages = 30
+    max_pages = 10
     params = build_incremental_params(
         last_watermark=last_watermark, page_limit=page_limit
     )
@@ -153,22 +181,27 @@ def write_landing_pages(run_id: str, pages_iter, dest_dir, watermark_path):
     return manifest
 
 
-# # CONFIG FOR TESTING--------------------------------------------------------------------
-# load_dotenv()
+# CONFIG FOR TESTING--------------------------------------------------------------------
 
-# with open("/Users/carlfinkbeiner/repos/nyc-car-crashes/config/settings.yaml") as f:
-#     config = yaml.safe_load(f)
 
-# base_url = config["dataset"]["base_url"]
-# dataset_id = config["dataset"]["dataset_id"]
-# SOCRATA_APP_TOKEN = os.getenv("SOCRATA_APP_TOKEN")
-# dest_path = r"/Users/carlfinkbeiner/repos/nyc-car-crashes/landing"
+with open("/Users/carlfinkbeiner/repos/nyc-car-crashes/config/settings.yaml") as f:
+    config = yaml.safe_load(f)
 
-# run_initial_export(
-#     dataset_id=dataset_id,
-#     base_url=base_url,
-#     format="csv",
-#     app_token=str(SOCRATA_APP_TOKEN),
-#     dest_path=dest_path,
-#     chunk_size=8192,
-# )
+with open("/Users/carlfinkbeiner/repos/nyc-car-crashes/config/secrets.yaml") as fs:
+    secrets = yaml.safe_load(fs)
+
+base_url = config["dataset"]["base_url"]
+dataset_id = config["dataset"]["dataset_id"]
+app_token = secrets["socrata"]["app_token"]
+dest_path = r"/Users/carlfinkbeiner/repos/nyc-car-crashes/landing"
+watermark_path = r"/Users/carlfinkbeiner/repos/nyc-car-crashes/state/watermark.json"
+
+run_initial_export(
+    dataset_id=dataset_id,
+    base_url=base_url,
+    format="csv",
+    app_token=str(app_token),
+    dest_path=dest_path,
+    chunk_size=8192,
+    watermark_path=watermark_path,
+)

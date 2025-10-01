@@ -25,6 +25,16 @@ def build_export_url(dataset_id: str, base_url: str, format: str = "csv") -> str
     return export_url
 
 
+def fetch_max_updated_at(dataset_id, base_url, app_token):
+    headers = {"X-App-Token": app_token}
+    params = {"$select": "max(:updated_at) as max_updated_at"}
+    url = f"https://{base_url}/resource/{dataset_id}.json"
+
+    with requests.get(url=url, headers=headers, params=params) as r:
+        resp = r.json()
+        return resp[0]["max_updated_at"]
+
+
 def fetch_export(url: str, app_token: str, dest_path: str, chunk_size: int = 8192):
     headers = {"X-App-Token": app_token}
     started = datetime.now(timezone.utc)
@@ -42,6 +52,9 @@ def fetch_export(url: str, app_token: str, dest_path: str, chunk_size: int = 819
                     file_size += len(chunk)
                 else:
                     continue
+    suggested_next_watermark = fetch_max_updated_at(
+        dataset_id=dataset_id, base_url=base_url, app_token=app_token
+    )
 
     finished = datetime.now(timezone.utc)
 
@@ -52,6 +65,7 @@ def fetch_export(url: str, app_token: str, dest_path: str, chunk_size: int = 819
         "snapshot_time": started.isoformat(),
         "started": started.isoformat(),
         "finished": finished.isoformat(),
+        "suggested_next_watermark": suggested_next_watermark,
     }
 
 
