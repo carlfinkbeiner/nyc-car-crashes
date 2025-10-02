@@ -20,9 +20,6 @@ normalized_data = cast_and_normalize(data)
 
 valid_rows, invalid_rows = validate_rows(normalized_data)
 
-print(len(valid_rows))
-print(invalid_rows)
-
 
 transform_manifest = write_transformed(
     valid_rows=valid_rows, transform_dir=transform_dir, landing_folder=landing_folder
