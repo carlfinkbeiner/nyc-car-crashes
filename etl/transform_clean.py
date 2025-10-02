@@ -162,4 +162,4 @@ def write_transformed(valid_rows: list[dict], transform_dir: str, landing_folder
         "transform_folder": transformed_data_path,
     }
 
-    return transform_manifest
+    return transform_manifest, transformed_data_path
