@@ -3,13 +3,15 @@ import json
 import os
 from datetime import datetime
 
+import pandas as pd
 
-def read_landing_pages(run_folder: str):
+
+def read_landing_pages(landing_folder: str):
     rows = []
-    for filename in os.listdir(run_folder):
+    for filename in os.listdir(landing_folder):
         if not filename.endswith(".ndjson.gz"):
             continue
-        file_path = os.path.join(run_folder, filename)
+        file_path = os.path.join(landing_folder, filename)
 
         with gzip.open(file_path, "rt", encoding="utf-8") as f:
             for line in f:
@@ -17,7 +19,7 @@ def read_landing_pages(run_folder: str):
                 clean_record = {k.lstrip(":"): v for k, v in record.items()}
                 rows.append(clean_record)
 
-    return rows
+    return rows, landing_folder
 
 
 def _g(row: dict, key: str, default=None):
@@ -131,3 +133,33 @@ def validate_rows(normalized_rows: list[dict]):
         else:
             valid_rows.append(row)
     return valid_rows, invalid_rows
+
+
+def write_transformed(valid_rows: list[dict], transform_dir: str, landing_folder: str):
+    with open(os.path.join(landing_folder, "manifest.json"), "r") as f:
+        landing_manifest = json.load(f)
+        landing_run_id = landing_manifest["run_id"]
+
+    transformed_data_path = os.path.join(transform_dir, landing_run_id)
+
+    if not os.path.isdir(transformed_data_path):
+        os.mkdir(transformed_data_path)
+
+    df = pd.DataFrame(valid_rows)
+    transformed_parquet = os.path.join(
+        transformed_data_path, "transformed_data.parquet"
+    )
+    df.to_parquet(transformed_parquet)
+    created_at = datetime.now().strftime("%Y-%m-%d_%H%M%S")
+
+    row_count = len(valid_rows)
+
+    transform_manifest = {
+        "row_count": row_count,
+        "run_id": landing_run_id,
+        "created_at": created_at,
+        "source_landing_folder": landing_folder,
+        "transform_folder": transformed_data_path,
+    }
+
+    return transform_manifest
