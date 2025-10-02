@@ -6,6 +6,6 @@ dataset:
 
 
 landing_dir: /Users/carlfinkbeiner/repos/nyc-car-crashes/landing
-transform_dir: /Users/carlfinkbeiner/repos/nyc-car-crashes/tranform
+transform_dir: /Users/carlfinkbeiner/repos/nyc-car-crashes/transform
 state_file_path: /Users/carlfinkbeiner/repos/nyc-car-crashes/state/watermark.json
 
