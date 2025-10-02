@@ -68,7 +68,7 @@ def main(
                     )
                 }
             ),
-        }
+        }, landing_path
 
     # iterate and land pages
     pages_iter = iterate_incremental_pages(
@@ -92,7 +92,7 @@ def main(
             "run_id": run_id,
             "run_folder": landing_path,
             "error": "write_landing_pages returned None (likely manifest already exists or write failed).",
-        }
+        }, landing_path
 
     suggested_next_watermark = manifest["suggested_next_watermark"]
 
@@ -106,7 +106,7 @@ def main(
         "suggested_next_watermark": suggested_next_watermark,
         "pages_written": len(manifest.get("pages", [])),
         "rows_written": sum(p.get("rows", 0) for p in manifest.get("pages", [])),
-    }
+    }, landing_path
 
 
 if __name__ == "__main__":
