@@ -102,7 +102,7 @@ def main(
     return {
         "exit_code": 0,
         "run_id": run_id,
-        "run_folder": landing_path,
+        "landing_folder": landing_path,
         "suggested_next_watermark": suggested_next_watermark,
         "pages_written": len(manifest.get("pages", [])),
         "rows_written": sum(p.get("rows", 0) for p in manifest.get("pages", [])),

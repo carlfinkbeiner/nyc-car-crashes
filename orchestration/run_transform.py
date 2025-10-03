@@ -14,13 +14,13 @@ def main(landing_folder: str, transform_dir: str):
     rows, landing_folder = read_landing_pages(landing_folder=landing_folder)
     normalized_rows = cast_and_normalize(rows=rows)
     valid_rows, invalid_rows = validate_rows(normalized_rows=normalized_rows)
-    transform_manifest, transformed_data_path = write_transformed(
+    transform_manifest, transformed_parquet_path = write_transformed(
         valid_rows=valid_rows,
         transform_dir=transform_dir,
         landing_folder=landing_folder,
     )
 
-    out_dir = os.path.dirname(transformed_data_path)
+    out_dir = os.path.dirname(transformed_parquet_path)
     os.makedirs(out_dir, exist_ok=True)  # harmless if it already exists
 
     transform_manifest_path = os.path.join(out_dir, "transform_manifest.json")
