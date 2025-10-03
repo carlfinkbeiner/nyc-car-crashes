@@ -146,10 +146,10 @@ def write_transformed(valid_rows: list[dict], transform_dir: str, landing_folder
         os.mkdir(transformed_data_path)
 
     df = pd.DataFrame(valid_rows)
-    transformed_parquet = os.path.join(
+    transformed_parquet_path = os.path.join(
         transformed_data_path, "transformed_data.parquet"
     )
-    df.to_parquet(transformed_parquet)
+    df.to_parquet(transformed_parquet_path)
     created_at = datetime.now().strftime("%Y-%m-%d_%H%M%S")
 
     row_count = len(valid_rows)
@@ -162,4 +162,4 @@ def write_transformed(valid_rows: list[dict], transform_dir: str, landing_folder
         "transform_folder": transformed_data_path,
     }
 
-    return transform_manifest, transformed_data_path
+    return transform_manifest, transformed_parquet_path
