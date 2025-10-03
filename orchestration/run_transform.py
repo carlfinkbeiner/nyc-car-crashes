@@ -36,7 +36,7 @@ def main(landing_folder: str, transform_dir: str):
         print(f"Invalid row count: {invalid_row_count}")
         print(f"Manifest path: {transform_manifest_path}")
 
-    return None
+    return transform_manifest
 
 
 if __name__ == "__main__":
