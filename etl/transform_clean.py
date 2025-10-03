@@ -179,6 +179,7 @@ def write_transformed(valid_rows: list[dict], transform_dir: str, landing_folder
         "created_at": created_at,
         "source_landing_folder": landing_folder,
         "transform_folder": transformed_data_path,
+        "transformed_parquet_path": transformed_parquet_path,
     }
 
     return transform_manifest, transformed_parquet_path

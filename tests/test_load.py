@@ -12,4 +12,4 @@ connection = connect_to_duckdb(db)
 
 # load_transformed_file(connection=connection, parquet_file=parquet_file)
 
-print(connection.sql("SELECT * FROM crashes;").fetchall())
+print(connection.sql("SELECT * FROM crashes limit 10000;").fetchall())
