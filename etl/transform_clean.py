@@ -16,7 +16,10 @@ def read_landing_pages(landing_folder: str):
         with gzip.open(file_path, "rt", encoding="utf-8") as f:
             for line in f:
                 record = json.loads(line)
-                clean_record = {k.lstrip(":"): v for k, v in record.items()}
+                clean_record = {
+                    k.lstrip(":").lower().replace(" ", "_"): v
+                    for k, v in record.items()
+                }
                 rows.append(clean_record)
 
     return rows, landing_folder
@@ -29,6 +32,13 @@ def _g(row: dict, key: str, default=None):
 def _safe_int(value):
     try:
         return int(value)
+    except (ValueError, TypeError):
+        return None
+
+
+def _safe_str(value):
+    try:
+        return str(value)
     except (ValueError, TypeError):
         return None
 
@@ -58,21 +68,30 @@ def _parse_updated_at(value):
 
 
 def _parse_crash_date(value):
+    if value is None:
+        return None
     try:
         return datetime.fromisoformat(value)
     except (TypeError, ValueError):
-        return None
+        pass
+    for fmt in ("%m/%d/%y", "%m/%d/%Y"):
+        try:
+            d = datetime.strptime(value, fmt)
+            return datetime(d.year, d.month, d.day)
+        except ValueError:
+            continue
+    return None
 
 
 def _parse_crash_ts(datepart, timepart):
-    try:
-        crash_date = datetime.fromisoformat(datepart)
-        crash_time = datetime.strptime(timepart, "%H:%M").time()
-        if crash_time:
-            return datetime.combine(crash_date, crash_time)
-        return crash_date
-    except (TypeError, ValueError):
+    d = _parse_crash_date(datepart)  # use the tolerant date parser
+    t = _safe_time(timepart)  # use the tolerant time parser
+    if d is None:
         return None
+    if t is None:
+
+        return d
+    return datetime.combine(d.date(), t)
 
 
 def _parse_borough(value):
@@ -89,7 +108,7 @@ def cast_and_normalize(rows: list[dict]):
     for row in rows:
         record = {
             "updated_at": _parse_updated_at(_g(row, "updated_at")),
-            "collision_id": row["collision_id"],
+            "collision_id": _safe_str(_g(row, "collision_id")),
             "crash_date": _parse_crash_date(_g(row, "crash_date")),
             "crash_time": _safe_time(_g(row, "crash_time")),
             "crash_ts": _parse_crash_ts(_g(row, "crash_date"), _g(row, "crash_time")),

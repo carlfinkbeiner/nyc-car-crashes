@@ -6,7 +6,7 @@ import os
 import uuid
 from datetime import datetime, timezone
 
-from utils.io_helpers import write_last_watermark
+from utils.io_helpers import csv_to_ndjson_gz, write_last_watermark
 from utils.socrata import (
     build_export_url,
     build_incremental_params,
@@ -30,19 +30,22 @@ def run_initial_export(
     final_directory_path = os.path.join(dest_path, f"{timestamp}_{run_id}")
     os.mkdir(final_directory_path)
 
-    final_export_path = os.path.join(final_directory_path, "export.csv")
+    csv_path = os.path.join(final_directory_path, "export.csv")
 
     export_dict = fetch_export(
-        url=url, app_token=app_token, dest_path=final_export_path, chunk_size=chunk_size
+        url=url, app_token=app_token, dest_path=csv_path, chunk_size=chunk_size
     )
     total_size = export_dict["bytes"]
     started_at = export_dict["started"]
     finished_at = export_dict["finished"]
     suggested_next_watermark = export_dict["suggested_next_watermark"]
 
-    with open(final_export_path, "r") as f:
+    with open(csv_path, "r") as f:
         reader = csv.reader(f)
         total_rows = sum(1 for row in reader)
+
+    ndjson_path = os.path.join(final_directory_path, "export.ndjson.gz")
+    csv_to_ndjson_gz(csv_file=csv_path, ndjson_gz_file=ndjson_path)
 
     manifest_dict = {
         "schema_version": "1.0",
@@ -56,11 +59,11 @@ def run_initial_export(
         "suggested_next_watermark": suggested_next_watermark,
         "started_at": started_at,
         "finished_at": finished_at,
+        "landing_folder": final_directory_path,
     }
 
     with open(f"{final_directory_path}/manifest.json", "w") as f:
         json.dump(manifest_dict, f, indent=4)
-
     write_last_watermark(manifest=manifest_dict, watermark_path=watermark_path)
 
     return manifest_dict

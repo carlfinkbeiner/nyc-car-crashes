@@ -20,9 +20,11 @@ def main(landing_folder: str, transform_dir: str):
         landing_folder=landing_folder,
     )
 
-    transform_manifest_path = os.path.join(
-        transformed_data_path, "tranform_manifest.json"
-    )
+    out_dir = os.path.dirname(transformed_data_path)
+    os.makedirs(out_dir, exist_ok=True)  # harmless if it already exists
+
+    transform_manifest_path = os.path.join(out_dir, "transform_manifest.json")
+
     with open(transform_manifest_path, "w") as f:
         json.dump(transform_manifest, f, indent=4)
 
@@ -30,7 +32,7 @@ def main(landing_folder: str, transform_dir: str):
         transform_manifest_dict = json.load(fr)
         row_count = transform_manifest_dict["row_count"]
         invalid_row_count = len(invalid_rows)
-        print(f"Valid rows written to parquet:{row_count}")
+        print(f"Valid rows written to parquet: {row_count}")
         print(f"Invalid row count: {invalid_row_count}")
         print(f"Manifest path: {transform_manifest_path}")
 

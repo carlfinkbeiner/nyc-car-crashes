@@ -1,3 +1,5 @@
+import csv
+import gzip
 import json
 
 import yaml
@@ -31,3 +33,14 @@ def load_last_watermark(watermark_path: str):
 def safe_load_yaml(yaml_path: str):
     with open(yaml_path, "r") as f:
         return yaml.safe_load(f)
+
+
+def csv_to_ndjson_gz(csv_file, ndjson_gz_file):
+    with open(csv_file, "r", newline="", encoding="utf-8") as f_in, gzip.open(
+        ndjson_gz_file, "wt", encoding="utf-8"
+    ) as f_out:
+
+        reader = csv.DictReader(f_in)
+        for row in reader:
+            json_line = json.dumps(row)
+            f_out.write(json_line + "\n")
