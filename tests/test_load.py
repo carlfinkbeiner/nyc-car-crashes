@@ -9,7 +9,6 @@ connection = connect_to_duckdb(db)
 
 # create_crashes_table(connection=connection)
 
-connection.sql("SELECT * FROM crashes;")
 
 # load_transformed_file(connection=connection, parquet_file=parquet_file)
 
