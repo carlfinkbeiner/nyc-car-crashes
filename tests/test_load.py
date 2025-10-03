@@ -8,8 +8,6 @@ parquet_file = r"/Users/carlfinkbeiner/repos/nyc-car-crashes/transform/cec218c8-
 connection = connect_to_duckdb(db)
 
 # create_crashes_table(connection=connection)
-
-
 # load_transformed_file(connection=connection, parquet_file=parquet_file)
 
 print(connection.sql("SELECT * FROM crashes limit 10000;").fetchall())
