@@ -2,7 +2,7 @@ dataset:
   name: Motor Vehicle Collisions - Crashes
   base_url: data.cityofnewyork.us
   dataset_id: h9gi-nx95
-  page_limit: 10
+  page_limit: 30
 
 
 landing_dir: /Users/carlfinkbeiner/repos/nyc-car-crashes/landing
