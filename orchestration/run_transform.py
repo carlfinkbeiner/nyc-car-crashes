@@ -21,6 +21,7 @@ def main(landing_folder: str, transform_dir: str):
     )
 
     out_dir = os.path.dirname(transformed_parquet_path)
+
     os.makedirs(out_dir, exist_ok=True)  # harmless if it already exists
 
     transform_manifest_path = os.path.join(out_dir, "transform_manifest.json")

@@ -2,6 +2,7 @@ import csv
 import gzip
 import json
 
+import duckdb
 import yaml
 
 
@@ -16,10 +17,12 @@ def write_last_watermark(manifest: dict, watermark_path: str):
         "run_id": run_id,
     }
 
-    with open(watermark_path, "w") as f:
-        json.dump(watermark_dict, f, indent=4)
+    if last_watermark is not None:
+        with open(watermark_path, "w") as f:
+            json.dump(watermark_dict, f, indent=4)
 
-    return True
+    else:
+        pass
 
 
 def load_last_watermark(watermark_path: str):
@@ -44,3 +47,9 @@ def csv_to_ndjson_gz(csv_file, ndjson_gz_file):
         for row in reader:
             json_line = json.dumps(row)
             f_out.write(json_line + "\n")
+
+
+def query_db(database_path: str, query: str, params: tuple | None):
+    with duckdb.connect(database=database_path) as con:
+        result = con.sql(query=query, params=params).fetchdf()
+    return result

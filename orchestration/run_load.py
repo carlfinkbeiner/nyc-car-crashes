@@ -1,3 +1,5 @@
+import pandas as pd
+
 from etl.load_upsert import (
     connect_to_duckdb,
     create_crashes_table,
@@ -9,9 +11,13 @@ from utils.io_helpers import safe_load_yaml
 def main(database_path: str, transformed_parquet_path: str):
     connection = connect_to_duckdb(database_path=database_path)
     create_crashes_table(connection=connection)
-    load_transformed_file(
-        connection=connection, transformed_parquet_path=transformed_parquet_path
-    )
+    df = pd.read_parquet(transformed_parquet_path)
+    if len(df) == 0:
+        print("No rows to write")
+    else:
+        load_transformed_file(
+            connection=connection, transformed_parquet_path=transformed_parquet_path
+        )
 
 
 if __name__ == "__main__":

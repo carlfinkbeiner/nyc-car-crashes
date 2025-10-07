@@ -158,8 +158,8 @@ def write_transformed(valid_rows: list[dict], transform_dir: str, landing_folder
     with open(os.path.join(landing_folder, "manifest.json"), "r") as f:
         landing_manifest = json.load(f)
         landing_run_id = landing_manifest["run_id"]
-
-    transformed_data_path = os.path.join(transform_dir, landing_run_id)
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
+    transformed_data_path = os.path.join(transform_dir, f"{timestamp}_{landing_run_id}")
 
     if not os.path.isdir(transformed_data_path):
         os.mkdir(transformed_data_path)
