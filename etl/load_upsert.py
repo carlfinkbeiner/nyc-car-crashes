@@ -3,7 +3,6 @@ import duckdb
 
 def connect_to_duckdb(database_path: str):
     connection = duckdb.connect(database=database_path)
-    print("Connected")
     return connection
 
 
@@ -17,13 +16,14 @@ def create_crashes_table(connection):
                 longitude FLOAT,
                 number_of_persons_injured INT,
                 number_of_persons_killed INT
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
         );"""
     )
 
 
 def load_transformed_file(connection, transformed_parquet_path):
     connection.sql(
-        """
+        f"""
         CREATE OR REPLACE TEMP TABLE staging_new_crashes AS
         SELECT
             collision_id,
@@ -34,9 +34,8 @@ def load_transformed_file(connection, transformed_parquet_path):
             number_of_persons_injured,
             number_of_persons_killed,
             updated_at
-        FROM read_parquet(?);
-        """,
-        [transformed_parquet_path],
+        FROM read_parquet('{transformed_parquet_path}');
+        """
     )
 
     connection.sql(

@@ -23,7 +23,7 @@ def main(database_path: str, transformed_parquet_path: str):
 if __name__ == "__main__":
     # CONFIG----------------
     settings_path = r"/Users/carlfinkbeiner/repos/nyc-car-crashes/config/settings.yaml"
-    transformed_parquet_path = r"/Users/carlfinkbeiner/repos/nyc-car-crashes/transform/cec218c8-c182-40e9-8a93-08759b67bd24/transformed_data.parquet"
+    transformed_parquet_path = r"/Users/carlfinkbeiner/repos/nyc-car-crashes/transform/2025-10-07_205641_19d330dc-e888-43d3-8438-ec180aa70746/transformed_data.parquet"
     settings = safe_load_yaml(settings_path)
     database_path = settings["database_path"]
     main(database_path=database_path, transformed_parquet_path=transformed_parquet_path)
