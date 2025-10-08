@@ -15,7 +15,7 @@ def create_crashes_table(connection):
                 latitude FLOAT,
                 longitude FLOAT,
                 number_of_persons_injured INT,
-                number_of_persons_killed INT
+                number_of_persons_killed INT,
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
         );"""
     )
@@ -48,7 +48,8 @@ def load_transformed_file(connection, transformed_parquet_path):
             latitude,
             longitude,
             number_of_persons_injured,
-            number_of_persons_killed
+            number_of_persons_killed,
+            updated_at
         FROM (
             SELECT
                 *,
