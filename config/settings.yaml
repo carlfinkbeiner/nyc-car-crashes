@@ -5,7 +5,7 @@ dataset:
   page_limit: 30
 
 
-landing_dir: /Users/carlfinkbeiner/repos/nyc-car-crashes/landing
-transform_dir: /Users/carlfinkbeiner/repos/nyc-car-crashes/transform
+landing_dir: /Users/carlfinkbeiner/repos/nyc-car-crashes/data/landing
+transform_dir: /Users/carlfinkbeiner/repos/nyc-car-crashes/data/transform
 state_file_path: /Users/carlfinkbeiner/repos/nyc-car-crashes/state/watermark.json
 database_path: /Users/carlfinkbeiner/repos/nyc-car-crashes/database/crashes_db.duckdb

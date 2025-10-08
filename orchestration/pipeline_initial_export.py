@@ -12,7 +12,7 @@ config = safe_load_yaml(settings_path)
 base_url = config["dataset"]["base_url"]
 dataset_id = config["dataset"]["dataset_id"]
 app_token = secrets["socrata"]["app_token"]
-landing_path = config["landing_dir"]
+landing_dir = config["landing_dir"]
 watermark_path = config["state_file_path"]
 transform_dir = config["transform_dir"]
 database_path = config["database_path"]
@@ -24,7 +24,7 @@ initial_export_manifest = run_initial_export(
     base_url=base_url,
     format="csv",
     app_token=app_token,
-    dest_path=landing_path,
+    dest_path=landing_dir,
     chunk_size=8192,
     watermark_path=watermark_path,
 )

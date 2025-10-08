@@ -16,7 +16,7 @@ def create_crashes_table(connection):
                 longitude FLOAT,
                 number_of_persons_injured INT,
                 number_of_persons_killed INT,
-                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         );"""
     )
 
@@ -33,7 +33,7 @@ def load_transformed_file(connection, transformed_parquet_path):
             longitude,
             number_of_persons_injured,
             number_of_persons_killed,
-            updated_at
+            updated_at::TIMESTAMPTZ AS updated_at
         FROM read_parquet('{transformed_parquet_path}');
         """
     )
@@ -49,7 +49,7 @@ def load_transformed_file(connection, transformed_parquet_path):
             longitude,
             number_of_persons_injured,
             number_of_persons_killed,
-            updated_at
+            COALESCE(updated_at, CURRENT_TIMESTAMP) AS updated_at
         FROM (
             SELECT
                 *,

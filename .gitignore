@@ -215,4 +215,6 @@ echo "landing/**/*.csv" >> .gitignore
 echo "landing/**/*.csv.gz" >> .gitignore
 echo "landing/**/export.csv" >> .gitignore
 /transform
-/database
+database/
+data/
+state/
